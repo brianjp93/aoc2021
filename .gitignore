@@ -1,0 +1,6 @@
+.vs
+*.ini
+*.DS_Store
+*__pycache__/
+
+.vim/
