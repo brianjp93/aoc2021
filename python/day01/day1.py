@@ -1,11 +1,7 @@
 from pathlib import Path
 
 with Path(Path(__file__).parent, 'data').open() as f:
-    raw_data = f.read()
+    data = [int(x) for x in f.readlines()]
 
-data = [int(x) for x in raw_data.splitlines()]
-
-increasing = [b > a for a, b in zip(data, data[1:])]
-print(sum(increasing))
-x = [b > a for a,b in zip(data, data[3:])]
-print(sum(x))
+print(sum(b > a for a, b in zip(data, data[1:])))
+print(sum(b > a for a, b in zip(data, data[3:])))
