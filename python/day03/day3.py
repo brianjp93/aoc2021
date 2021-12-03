@@ -23,8 +23,7 @@ def filter_by(data: list[str], filter_function):
     data = data[:]
     while len(data) > 1:
         for i in range(len(data[0])):
-            value = filter_function(data, i)
-            data = [x for x in data if x[i] == value]
+            data = [x for x in data if x[i] == filter_function(data, i)]
             if len(data) == 1:
                 break
     return int(''.join(data[0]), 2)
