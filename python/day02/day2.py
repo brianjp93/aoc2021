@@ -1,11 +1,11 @@
 from pathlib import Path
+import re
+
 with Path(Path(__file__).parent, 'data').open() as f:
-    data = f.readlines()
+    data = [(a, int(b)) for a, b in re.findall(r'(\w+) (\d+)', f.read())]
 
 x = z = 0
-for line in data:
-    dir, n = line.split()
-    n = int(n)
+for dir, n in data:
     match dir:
         case 'forward':
             x += n
@@ -16,9 +16,7 @@ for line in data:
 print(x * z)
 
 x = z = aim = 0
-for line in data:
-    dir, n = line.split()
-    n = int(n)
+for dir, n in data:
     match dir:
         case 'forward':
             x += n

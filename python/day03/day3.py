@@ -1,7 +1,7 @@
 from pathlib import Path
+from collections import Counter
 with Path(Path(__file__).parent, 'data').open() as f:
     data = [x.strip() for x in f.readlines()]
-
 
 gamma = ['1' if bit.count('1') > bit.count('0') else '0' for bit in zip(*data)]
 epsilon = ['1' if x == '0' else '0' for x in gamma]
@@ -10,21 +10,16 @@ x = int(''.join(gamma), 2)
 y = int(''.join(epsilon), 2)
 print(x * y)
 
+def most_common(data: list[str], index: int):
+    counts = Counter(x[index] for x in data)
+    return '1' if counts['1'] >= counts['0'] else '0'
 
-def most_common(data, index):
-    l = [x[index] for x in data]
-    if l.count('1') >= l.count('0'):
-        return '1'
-    return '0'
-
-def least_common(data, index):
-    l = [x[index] for x in data]
-    if l.count('0') <= l.count('1'):
-        return '0'
-    return '1'
+def least_common(data: list[str], index: int):
+    counts = Counter(x[index] for x in data)
+    return '0' if counts['0'] <= counts['1'] else '1'
 
 
-def filter_by(data, filter_function):
+def filter_by(data: list[str], filter_function):
     data = data[:]
     while len(data) > 1:
         for i in range(len(data[0])):
