@@ -15,11 +15,9 @@ class School:
     def next_day(self):
         new_fish = defaultdict(int)
         for timer, count in self.fish.items():
-            if timer > 0:
-                new_fish[timer - 1] += count
-            elif timer == 0:
-                new_fish[8] += count
-                new_fish[6] += count
+            new_fish[timer - 1] += count
+        new_fish[8] = new_fish.pop(-1, 0)
+        new_fish[6] += new_fish[8]
         self.fish = new_fish
 
     @property
