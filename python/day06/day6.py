@@ -6,9 +6,6 @@ with Path(Path(__file__).parent, 'data').open() as f:
 class School:
     def __init__(self, data):
         self.fish = defaultdict(int)
-        self.process_data(data)
-
-    def process_data(self, data):
         for x in data[:]:
             self.fish[x] += 1
 
