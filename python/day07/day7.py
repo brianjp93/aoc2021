@@ -24,7 +24,7 @@ class IncreasingFuelSwarm(Swarm):
         total = 0
         for npos, count in self.positions.items():
             n = abs(pos - npos)
-            total += int((n * (n + 2)) / 2 * count)
+            total += int((n * (n + 1)) / 2 * count)
         return total
 
 swarm = ConstantSwarm(positions)
