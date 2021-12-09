@@ -3,18 +3,17 @@ from math import prod
 with Path(Path(__file__).parent, "data").open() as f:
     RAW = f.read().strip()
 
-data: dict[tuple[int, int], int] = {}
+data: dict[complex, int] = {}
 for y, row in enumerate(RAW.split("\n")):
     for x, n in enumerate(row):
-        data[(x, y)] = int(n)
+        data[complex(x, y)] = int(n)
 
-def get_adj(coord: tuple[int, int]):
-    for near in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
-        ncoord = (coord[0] + near[0], coord[1] + near[1])
-        if data.get(ncoord) is not None:
-            yield ncoord
+def get_adj(coord: complex):
+    for near in [1, -1, 1j, -1j]:
+        if data.get(coord + near) is not None:
+            yield coord + near
 
-def get_basin(coord: tuple[int, int], basin: set[tuple[int, int]]):
+def get_basin(coord: complex, basin: set[complex]):
     basin.add(coord)
     check = [
         ncoord for ncoord in get_adj(coord)
