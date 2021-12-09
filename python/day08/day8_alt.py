@@ -1,5 +1,7 @@
 from pathlib import Path
 from collections import Counter
+from functools import cached_property
+from dataclasses import dataclass
 import re
 with Path(Path(__file__).parent, 'data').open() as f:
     RAW = f.read().strip()
@@ -7,16 +9,16 @@ NUM = ['abcefg', 'cf', 'acdeg', 'acdfg', 'bcdf', 'abdfg', 'abdefg', 'acf', 'abcd
 NUM_COUNT = Counter(''.join(NUM))
 NUM_SUMS = {sum(NUM_COUNT[x] for x in chars): n for n, chars in enumerate(NUM)}
 
+@dataclass
 class Entry:
-    def __init__(self, one: list[frozenset[str]], two: list[frozenset[str]]):
-        self.one = one
-        self.two = two
-        self.map = self.get_mapping()
+    one: list[frozenset[str]]
+    two: list[frozenset[str]]
 
     def output(self):
         return int(''.join(str(self.map[x]) for x in self.two))
 
-    def get_mapping(self):
+    @cached_property
+    def map(self):
         counts = Counter(''.join(''.join(chars) for chars in self.one))
         return {chars: NUM_SUMS[sum(counts[x] for x in chars)] for chars in self.one}
 
