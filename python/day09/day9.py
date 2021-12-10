@@ -15,11 +15,10 @@ def get_adj(coord: complex):
 
 def get_basin(coord: complex, basin: set[complex]):
     basin.add(coord)
-    check = [
-        ncoord for ncoord in get_adj(coord)
-        if all((ncoord not in basin, data[ncoord] > data[coord], data[ncoord] != 9))
-    ]
-    return basin.union(*(get_basin(x, basin) for x in check))
+    return basin.union(*(
+        get_basin(x, basin) for x in get_adj(coord)
+        if all((x not in basin, 9 != data[x] > data[coord]))
+    ))
 
 output = [
     (h+1, len(get_basin(coord, set())))
