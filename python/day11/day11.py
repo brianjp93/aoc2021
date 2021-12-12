@@ -6,7 +6,6 @@ class Ocean:
     def __init__(self, data):
         self.map: dict[complex, int] = self.get_map(data)
         self.flash_count = 0
-
         self.flashed = set()
 
     def get_map(self, data):
