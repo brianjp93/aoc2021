@@ -30,15 +30,11 @@ def parse_data(data, packet_count=float('inf')):
     out = []
     versions = []
     count = 0
-    type_id = None
-    first_type_id = None
     while data.strip('0') and count < packet_count:
         count += 1
         version = int(data[:3], 2)
         versions.append(version)
         type_id = int(data[3:6], 2)
-        if first_type_id is None:
-            first_type_id = type_id
         data = data[6:]
         match type_id:
             case 4:
