@@ -4,27 +4,27 @@ with Path(Path(__file__).parent, "data").open() as f:
     RAW = f.read().strip()
 
 convert = {
-    '0': '0000',
-    '1': '0001',
-    '2': '0010',
-    '3': '0011',
-    '4': '0100',
-    '5': '0101',
-    '6': '0110',
-    '7': '0111',
-    '8': '1000',
-    '9': '1001',
-    'A': '1010',
-    'B': '1011',
-    'C': '1100',
-    'D': '1101',
-    'E': '1110',
+    '0': '0000', '1': '0001', '2': '0010',
+    '3': '0011', '4': '0100', '5': '0101',
+    '6': '0110', '7': '0111', '8': '1000',
+    '9': '1001', 'A': '1010', 'B': '1011',
+    'C': '1100', 'D': '1101', 'E': '1110',
     'F': '1111',
 }
 
 def window(data: str, n: int):
     for i in range(0, len(data), n):
         yield data[i: i + n], i + n
+
+handlers = {
+    0: lambda x: sum(x),
+    1: lambda x: prod(x, start=1),
+    2: lambda x: min(x),
+    3: lambda x: max(x),
+    5: lambda x: x[0] > x[1],
+    6: lambda x: x[0] < x[1],
+    7: lambda x: x[0] == x[1],
+}
 
 def parse_data(data, packet_count=float('inf')):
     out = []
@@ -58,33 +58,13 @@ def parse_data(data, packet_count=float('inf')):
                     data = data[12:]
                     n_out, n_versions, data = parse_data(data, packet_count=sub_packets)
 
-                match type_id:
-                    case 0:
-                        n_out = sum(n_out)
-                    case 1:
-                        n_out = prod(n_out, start=1)
-                    case 2:
-                        n_out = min(n_out)
-                    case 3:
-                        n_out = max(n_out)
-                    case 5:
-                        n_out = 1 if n_out[0] > n_out[1] else 0
-                    case 6:
-                        n_out = 1 if n_out[0] < n_out[1] else 0
-                    case 7:
-                        n_out = 1 if n_out[0] == n_out[1] else 0
-
-                out.append(n_out)
+                out.append(handlers[type_id](n_out))
                 versions.extend(n_versions)
 
     return out, versions, data
 
 
-bits = []
-for ch in RAW:
-    bits.append(convert[ch])
-bits = ''.join(bits)
-
+bits = ''.join(convert[ch] for ch in RAW)
 out, versions, _ = parse_data(bits)
 print(sum(versions))
 print(out[0])
