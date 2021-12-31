@@ -13,11 +13,8 @@ class Node:
     ):
         self.is_l = is_l
         self.parent = parent
-        if isinstance(raw, list) or isinstance(raw, int):
-            self.data = raw
-        else:
-            self.data = literal_eval(raw)
-        self.left, self.right, self.val = self.parse()
+        data = raw if isinstance(raw, (list, int)) else literal_eval(raw)
+        self.left, self.right, self.val = self.parse(data)
 
     @property
     def magnitude(self):
@@ -26,10 +23,10 @@ class Node:
         assert self.left and self.right
         return 3 * self.left.magnitude + 2 * self.right.magnitude
 
-    def parse(self):
-        if isinstance(self.data, int):
-            return None, None, self.data
-        return Node(self.data[0], True, self), Node(self.data[1], False, self), None
+    def parse(self, data):
+        if isinstance(data, int):
+            return None, None, data
+        return Node(data[0], True, self), Node(data[1], False, self), None
 
     def __repr__(self):
         if self.val is not None:
@@ -76,11 +73,9 @@ class Node:
 
     def split(self):
         assert self.val is not None and self.val >= 10
-        left = self.val // 2
-        right = ceil(self.val / 2)
+        self.left = Node(self.val // 2, is_l=True, parent=self)
+        self.right = Node(ceil(self.val / 2), is_l=False, parent=self)
         self.val = None
-        self.left = Node(left, is_l=True, parent=self)
-        self.right = Node(right, is_l=False, parent=self)
 
     def explode(self):
         assert self.left and self.right
