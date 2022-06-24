@@ -36,10 +36,10 @@ class Game:
             if result := self.play_round():
                 return result
 
-# p1 = Player(5)
-# p2 = Player(0)
-p1 = Player(3)
-p2 = Player(7)
+p1 = Player(5)
+p2 = Player(0)
+# p1 = Player(3)
+# p2 = Player(7)
 game = Game([p1, p2])
 winner, loser = game.play_until_win()
 print(loser.score)
