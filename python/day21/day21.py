@@ -1,5 +1,14 @@
+from itertools import product
+from typing import Counter
+
+
 DIE_SIDES = 100
 SPACES = 10
+GOAL = 21
+P1 = 6
+P2 = 1
+POSSIBILITIES = Counter(sum(x) for x in product((1, 2, 3), repeat=3))
+
 
 class Player:
     def __init__(self, x: int):
@@ -36,12 +45,49 @@ class Game:
             if result := self.play_round():
                 return result
 
-# p1 = Player(5)
-# p2 = Player(0)
-p1 = Player(3)
-p2 = Player(7)
-game = Game([p1, p2])
-winner, loser = game.play_until_win()
-print(loser.score)
-print(game.roll_count)
-print(loser.score * game.roll_count)
+def next_pos(add_n: int, current_pos: int):
+    return ((current_pos + add_n - 1) % 10) + 1
+
+def quantum_game(start: int):
+    cache: list[tuple[int, int, int, int]] = [(start, 0, 0, 1)]
+    wins: dict[int, int] = {}
+    losses: dict[int, int] = {}
+    while cache:
+        item = cache.pop()
+        pos, rolls, score, ways = item
+        if score >= GOAL:
+            wins[rolls] = wins.get(rolls, 0) + ways
+            continue
+        else:
+            losses[rolls] = losses.get(rolls, 0) + ways
+        for n, c in POSSIBILITIES.items():
+            npos = next_pos(n, pos)
+            nscore = score + npos
+            nrolls = rolls + 3
+            nways = ways * c
+            nitem = npos, nrolls, nscore, nways
+            cache.append(nitem)
+    return wins, losses
+
+
+def count_wins(p1_wins, p1_losses, p2_wins, p2_losses):
+    total_1: int = 0
+    total_2: int = 0
+    for rolls, ways in p1_wins.items():
+        prev_rolls = rolls - 3
+        total_1 += (ways * p2_losses.get(prev_rolls, 0))
+    for rolls, ways in p2_wins.items():
+        total_2 += (ways * p1_losses.get(rolls, 0))
+    return total_1, total_2
+
+
+if __name__ == '__main__':
+    player1 = Player(3)
+    player2 = Player(7)
+    game = Game([player1, player2])
+    winner, loser = game.play_until_win()
+    print(loser.score * game.roll_count)
+
+    p1_wins, p1_losses = quantum_game(P1)
+    p2_wins, p2_losses = quantum_game(P2)
+    print(max(count_wins(p1_wins, p1_losses, p2_wins, p2_losses)))
