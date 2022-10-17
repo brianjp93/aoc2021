@@ -10,7 +10,7 @@ fn get_data() -> String {
 fn part1() -> u64 {
     let content = get_data();
     let mut line_count = 0;
-    let mut vec_total: Vec<u32> = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0].into_iter().collect();
+    let mut vec_total: Vec<u32> = vec![0; 12];
     for line in content.lines() {
         line_count += 1;
         let chars: Vec<u32> = line
