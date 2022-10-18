@@ -13,13 +13,19 @@ impl Board {
         return Board {
             board,
             is_win: false,
-        }
+        };
     }
     fn is_win(&self, marked: &Vec<u32>) -> bool {
         let blen = self.board.len();
         for row in &self.board {
-            if row.iter().filter(|x| marked.contains(x)).collect::<Vec<&u32>>().len() == blen {
-                return true
+            if row
+                .iter()
+                .filter(|x| marked.contains(x))
+                .collect::<Vec<&u32>>()
+                .len()
+                == blen
+            {
+                return true;
             }
         }
         for x in 0..self.board[0].len() {
@@ -27,8 +33,14 @@ impl Board {
             for y in 0..self.board.len() {
                 col.push(self.board[y][x]);
             }
-            if col.iter().filter(|x| marked.contains(x)).collect::<Vec<&u32>>().len() == blen {
-                return true
+            if col
+                .iter()
+                .filter(|x| marked.contains(x))
+                .collect::<Vec<&u32>>()
+                .len()
+                == blen
+            {
+                return true;
             }
         }
         false
@@ -42,7 +54,7 @@ impl Board {
                 }
             }
         }
-        return total * last
+        return total * last;
     }
 }
 
@@ -86,23 +98,29 @@ fn part1() -> Result<u32, ()> {
         for board in &boards {
             if board.is_win(&marked) {
                 let score = board.score(&marked, x);
-                return Ok(score)
+                return Ok(score);
             }
         }
     }
     Err(())
 }
 
-fn part2() -> Result<u32, ()>{
+fn part2() -> Result<u32, ()> {
     let (nums, mut boards) = get_boards();
     let mut marked: Vec<u32> = Vec::new();
     for x in nums {
         marked.push(x.clone());
-        for i in 0..boards.len(){
+        for i in 0..boards.len() {
             if boards[i].is_win(&marked) {
                 boards[i].is_win = true;
-                if boards.iter().filter(|x| !x.is_win).collect::<Vec<&Board>>().len() == 0 {
-                    return Ok(boards[i].score(&marked, x))
+                if boards
+                    .iter()
+                    .filter(|x| !x.is_win)
+                    .collect::<Vec<&Board>>()
+                    .len()
+                    == 0
+                {
+                    return Ok(boards[i].score(&marked, x));
                 }
             }
         }
