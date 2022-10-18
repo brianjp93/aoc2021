@@ -2,18 +2,20 @@ use std::{fs::File, io::Read};
 
 type BoardType = Vec<Vec<u32>>;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Board {
     board: BoardType,
+    is_win: bool,
 }
 
 impl Board {
     fn from(board: BoardType) -> Board {
         return Board {
             board,
+            is_win: false,
         }
     }
-    fn is_win(&mut self, marked: Vec<u32>) -> bool {
+    fn is_win(&self, marked: &Vec<u32>) -> bool {
         let blen = self.board.len();
         for row in &self.board {
             if row.iter().filter(|x| marked.contains(x)).collect::<Vec<&u32>>().len() == blen {
@@ -29,19 +31,18 @@ impl Board {
                 return true
             }
         }
-        let mut dia: Vec<u32> = Vec::new();
-        let mut dia2: Vec<u32> = Vec::new();
-        for x in 0..4usize {
-            dia.push(self.board[x][x]);
-            dia2.push(self.board[blen-x-1][x])
-        }
-        if dia.iter().filter(|x| marked.contains(x)).collect::<Vec<&u32>>().len() == blen {
-            return true
-        }
-        if dia2.iter().filter(|x| marked.contains(x)).collect::<Vec<&u32>>().len() == blen {
-            return true
-        }
         false
+    }
+    fn score(&self, marked: &Vec<u32>, last: u32) -> u32 {
+        let mut total = 0u32;
+        for row in &self.board {
+            for x in row {
+                if !marked.contains(x) {
+                    total += x;
+                }
+            }
+        }
+        return total * last
     }
 }
 
@@ -77,12 +78,41 @@ fn get_boards() -> (Vec<u32>, Vec<Board>) {
     return (nums, boards);
 }
 
-fn part1() {
+fn part1() -> Result<u32, ()> {
     let (nums, boards) = get_boards();
-    println!("nums: {:?}", nums);
-    println!("boards: {:?}", boards);
+    let mut marked: Vec<u32> = Vec::new();
+    for x in nums {
+        marked.push(x.clone());
+        for board in &boards {
+            if board.is_win(&marked) {
+                let score = board.score(&marked, x);
+                return Ok(score)
+            }
+        }
+    }
+    Err(())
+}
+
+fn part2() -> Result<u32, ()>{
+    let (nums, mut boards) = get_boards();
+    let mut marked: Vec<u32> = Vec::new();
+    for x in nums {
+        marked.push(x.clone());
+        for i in 0..boards.len(){
+            if boards[i].is_win(&marked) {
+                boards[i].is_win = true;
+                if boards.iter().filter(|x| !x.is_win).collect::<Vec<&Board>>().len() == 0 {
+                    return Ok(boards[i].score(&marked, x))
+                }
+            }
+        }
+    }
+    Err(())
 }
 
 fn main() {
-    part1();
+    let score1 = part1().unwrap();
+    println!("part1: {:?}", score1);
+    let score2 = part2().unwrap();
+    println!("part1: {:?}", score2);
 }
