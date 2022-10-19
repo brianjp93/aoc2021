@@ -132,5 +132,5 @@ fn main() {
     let score1 = part1().unwrap();
     println!("part1: {:?}", score1);
     let score2 = part2().unwrap();
-    println!("part1: {:?}", score2);
+    println!("part2: {:?}", score2);
 }
