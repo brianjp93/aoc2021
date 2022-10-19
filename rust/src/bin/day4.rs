@@ -111,7 +111,7 @@ fn part2() -> Result<u32, ()> {
     for x in nums {
         marked.push(x.clone());
         for i in 0..boards.len() {
-            if boards[i].is_win(&marked) {
+            if !boards[i].is_win && boards[i].is_win(&marked) {
                 boards[i].is_win = true;
                 if boards
                     .iter()
